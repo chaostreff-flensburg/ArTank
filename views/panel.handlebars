@@ -1,31 +1,52 @@
 <html>
 
 <body>
-<script type="text/javascript" src="js/socket.io.min.js"></script>
+    <script type="text/javascript" src="js/socket.io.min.js"></script>
+    <script type="text/javascript" src="js/nipplejs.min.js"></script>
     <script>
         var socket = io();
         var controlling = false;
         var waitingTime = 0;
         const checkupTime = 1000;
 
-        var x = 0,
-            y = 0;
+        var xy = [0, 0];
 
         var setXY = function() {
-              socket.emit('xy', {
-                  'xy': [x, y]
-              });
-          }
-
+            socket.emit('xy', {
+                'xy': xy
+            });
+        }
     </script>
     <div id="controlInfo">No connection to Host</div>
-
-    <input id="xSlider" type="range" min="-255" max="255" step="1" oninput="x = this.value; setXY();"/>
-    <input id="ySlider" type="range" min="-255" max="255" step="1" oninput="y = this.value; setXY();"/>
-
+    <div id="joystick"></div>
     <script>
+        //add joystick
+        var stick = nipplejs.create({
+            zone: document.getElementById('joystick'),
+            mode: 'static',
+            position: {
+                left: '50%',
+                top: '50%'
+            },
+            color: 'red'
+        });
 
+        //save front div
+        var front = document.getElementsByClassName('front')[0];
 
+        //function which moves the stick to the current position
+        var moveStick = function() {
+          front.style.left = xy[0];
+          front.style.top = xy[1];
+        }
+
+        //listen for joystick movement
+        stick.on('move', function(ev, nipple) {
+          console.dir(nipple);
+          xy = [nipple.instance.frontPosition.x, nipple.instance.frontPosition.y];
+
+          setXY();
+        });
 
         var toggleControlElements = function(control) {
             //controlElements.disabled = !control;
@@ -35,11 +56,12 @@
         toggleControlElements(controlling);
 
         //set intial slider values
-        /*
         socket.on('initialize', function(msg) {
             //set joystick
+            xy = msg.xy;
+
+            moveStick();
         });
-        */
 
         //lock sliders if user is not in control
         socket.on('controlling', function(msg) {
@@ -57,14 +79,14 @@
             }
         });
 
-        //transmit slider values if user is not controlling
-        /*
-        socket.on('color', function(msg) {
-            $('#colorpickerHolder').ColorPickerSetColor(msg);
-
-            rgb = msg.rgb;
+        //transmit joystick values if user is not controlling
+        socket.on('xy', function(msg) {
+          if(!controlling) {
+            xy = msg.xy;
+            moveStick();
+          }
         });
-*/
+
         //if client is not controlling, periodically check if control has been given to client
         var controllerCheck = function() {
             if (!controlling) {

@@ -57,7 +57,9 @@ app.use(router);
 // ArTank Serial Communication
 // ====================
 
-var tank = new SerialPort('/dev/tty-usbserial1', function(err) {
+var tank = new SerialPort('/dev/ttyACM0', {
+    baudRate: 115200
+}, function(err) {
     if (err) {
         return console.log('Error: ', err.message);
     }
@@ -167,11 +169,9 @@ io.on('connection', function(socket) {
     });
 
     //send initial values to new user
-    /*
     socket.emit('initialize', {
-        'rgb' : rgb
+        'xy' : xy
     });
-    */
 
     //let clients check if the controller has changed
     socket.on('controllercheck', function() {
@@ -214,11 +214,23 @@ io.on('connection', function(socket) {
     socket.on('xy', function(msg) {
         //only process input from currently controlling socket
         if (socket.id === controllingSocket) {
-            socket.broadcast.emit('xy', {
-                'xy': [parseInt(msg.xy[0]), parseInt(msg.xy[1])]
+
+          //broadcast current position to all sockets
+          socket.broadcast.emit('xy', {
+              'xy': msg.xy
+          });
+
+            //save and validate new position, format for arduino
+            xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
+            xy.forEach(function(e, i, a) {
+              e = Math.floor(e);
+              e = e*5.1;
+              e = Math.min(255, e);
+              e = Math.max(-255, e);
+
+              xy[i] = e;
             });
             //console.log('R Value: ' + msg);
-            xy = msg.xy;
 
             //send current xy values to tank
             console.log(xy);
