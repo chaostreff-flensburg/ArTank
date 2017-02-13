@@ -1,49 +1,50 @@
 <html>
 
 <body>
-    <script type="text/javascript" src="js/virtualjoystick.js"></script>
-
+<script type="text/javascript" src="js/socket.io.min.js"></script>
     <script>
         var socket = io();
         var controlling = false;
         var waitingTime = 0;
         const checkupTime = 1000;
+
+        var x = 0,
+            y = 0;
+
+        var setXY = function() {
+              socket.emit('xy', {
+                  'xy': [x, y]
+              });
+          }
+
     </script>
     <div id="controlInfo">No connection to Host</div>
 
-    <p id="colorpickerHolder" class="controlElement"></p>
+    <input id="xSlider" type="range" min="-255" max="255" step="1" oninput="x = this.value; setXY();"/>
+    <input id="ySlider" type="range" min="-255" max="255" step="1" oninput="y = this.value; setXY();"/>
 
-    <input class="controlElement" type="button" value="Fade" onclick="socket.emit('function', {'function' : 'fade', 'rgb' : rgb});">
-    <input class="controlElement" type="button" value="Blink" onclick="socket.emit('function', {'function' : 'blink',  'rgb' : rgb});">
     <script>
-        //add joystick
 
-        var controlElements = document.getElementsByClassName('controlElement');
 
-        var controlInfo = document.getElementById('controlInfo');
-
-        var setColor = function(rgb) {
-            socket.emit('color', {
-                'rgb': rgb
-            });
-        }
 
         var toggleControlElements = function(control) {
-            controlElements.disabled = !control;
+            //controlElements.disabled = !control;
         }
 
         //toggle sliders initially
         toggleControlElements(controlling);
 
         //set intial slider values
+        /*
         socket.on('initialize', function(msg) {
-          //set joystick
+            //set joystick
         });
+        */
 
         //lock sliders if user is not in control
         socket.on('controlling', function(msg) {
             controlling = msg.control;
-            toggleControlElements(controlling);
+            //toggleControlElements(controlling);
 
             //set control info
             if (controlling) {
@@ -56,13 +57,14 @@
             }
         });
 
-        //transmit slider values if user is controlling
+        //transmit slider values if user is not controlling
+        /*
         socket.on('color', function(msg) {
             $('#colorpickerHolder').ColorPickerSetColor(msg);
 
             rgb = msg.rgb;
         });
-
+*/
         //if client is not controlling, periodically check if control has been given to client
         var controllerCheck = function() {
             if (!controlling) {

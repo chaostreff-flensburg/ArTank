@@ -10,6 +10,7 @@ var express = require("express"),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     methodOverride = require('method-override'),
+    serialport = require('serialport'),
     errorHandler = require('errorhandler'),
     hostname = process.env.HOSTNAME || 'localhost',
     PORT = process.env.PORT || 8081,
@@ -53,9 +54,23 @@ router.get('/', function(req, res) {
 app.use(router);
 
 // ====================
+// ArTank Serial Communication
+// ====================
+
+var tank = new SerialPort('/dev/tty-usbserial1', function(err) {
+    if (err) {
+        return console.log('Error: ', err.message);
+    }
+});
+
+tank.on('data', function(data) {
+    console.log('Data: ' + data);
+});
+
+// ====================
 // Socket.io
 // ====================
-var rgb = [0, 0, 0];
+var xy = [0, 0];
 var controllingSocket = "";
 var controllingTimestamp = 0;
 var waitingSockets = [];
@@ -152,9 +167,11 @@ io.on('connection', function(socket) {
     });
 
     //send initial values to new user
+    /*
     socket.emit('initialize', {
         'rgb' : rgb
     });
+    */
 
     //let clients check if the controller has changed
     socket.on('controllercheck', function() {
@@ -194,20 +211,18 @@ io.on('connection', function(socket) {
     });
 
     //handle incoming values
-    socket.on('color', function(msg) {
+    socket.on('xy', function(msg) {
         //only process input from currently controlling socket
         if (socket.id === controllingSocket) {
-            socket.broadcast.emit('color', {
-              'rgb' : msg.rgb
+            socket.broadcast.emit('xy', {
+                'xy': [parseInt(msg.xy[0]), parseInt(msg.xy[1])]
             });
             //console.log('R Value: ' + msg);
-            rgb = msg.rgb;
+            xy = msg.xy;
 
-            //send current rgb values to led process
-            led.send({
-                'function': 'setColors',
-                'rgb': msg.rgb
-            });
+            //send current xy values to tank
+            console.log(xy);
+            tank.write(new Buffer(xy[0] + ';' + xy[1] + '*'));
         }
     });
 });
