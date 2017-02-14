@@ -1,5 +1,9 @@
 <html>
 
+<head>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+</head>
+
 <body>
     <script type="text/javascript" src="js/socket.io.min.js"></script>
     <script type="text/javascript" src="js/nipplejs.min.js"></script>
@@ -18,42 +22,88 @@
         }
     </script>
     <div id="controlInfo">No connection to Host</div>
-    <div id="joystick"></div>
+    <div id="joystickL" class="stickzone"></div>
+    <div id="joystickR" class="stickzone"></div>
     <script>
         //add joystick
-        var stick = nipplejs.create({
-            zone: document.getElementById('joystick'),
+        var stickL = nipplejs.create({
+            zone: document.getElementById('joystickL'),
             mode: 'static',
             position: {
-                left: '50%',
+                left: '35%',
                 top: '50%'
             },
             color: 'red'
         });
 
-        //save front div
-        var front = document.getElementsByClassName('front')[0];
+        var stickR = nipplejs.create({
+            zone: document.getElementById('joystickR'),
+            mode: 'static',
+            position: {
+                left: '65%',
+                top: '50%'
+            },
+            color: 'red'
+        });
+
+        //save stick front divs
+        var frontArray = document.getElementsByClassName('front');
 
         //function which moves the stick to the current position
         var moveStick = function() {
-          front.style.left = xy[0];
-          front.style.top = xy[1];
+            frontArray[0].style.top = xy[0];
+            frontArray[1].style.top = xy[1];
         }
 
         //listen for joystick movement
-        stick.on('move', function(ev, nipple) {
-          console.dir(nipple);
-          xy = [nipple.instance.frontPosition.x, nipple.instance.frontPosition.y];
+        stickL.on('move', function(ev, nipple) {
+          //check if client is controlling
+            if (controlling) {
+                //set new position
+                xy[0] = nipple.instance.frontPosition.y;
+                //prevent lateral movement
+                frontArray[0].style.left = 0;
 
-          setXY();
+                setXY();
+            } else {
+              //prevent all movement
+                frontArray[0].style.left = 0;
+                frontArray[0].style.top = 0;
+            }
         });
 
-        var toggleControlElements = function(control) {
+        stickR.on('move', function(ev, nipple) {
+          if (controlling) {
+              xy[1] = nipple.instance.frontPosition.y;
+              frontArray[1].style.left = 0;
+
+              setXY();
+          } else {
+              frontArray[1].style.left = 0;
+              frontArray[1].style.top = 0;
+          }
+        });
+
+        stickL.on('end', function(ev, nipple) {
+            xy[0] = 0;
+
+            setXY();
+        });
+
+        stickR.on('end', function(ev, nipple) {
+            xy[1] = 0;
+
+            setXY();
+        });
+
+        var toggleSticks = function(control) {
             //controlElements.disabled = !control;
         }
 
         //toggle sliders initially
-        toggleControlElements(controlling);
+        toggleSticks(controlling);
+
+        /* --------- SOCKET STUFF ------- */
 
         //set intial slider values
         socket.on('initialize', function(msg) {
@@ -81,10 +131,10 @@
 
         //transmit joystick values if user is not controlling
         socket.on('xy', function(msg) {
-          if(!controlling) {
-            xy = msg.xy;
-            moveStick();
-          }
+            if (!controlling) {
+                xy = msg.xy;
+                moveStick();
+            }
         });
 
         //if client is not controlling, periodically check if control has been given to client

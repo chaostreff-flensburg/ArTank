@@ -224,7 +224,7 @@ io.on('connection', function(socket) {
             xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
             xy.forEach(function(e, i, a) {
               e = Math.floor(e);
-              e = e*5.1;
+              e = e*5;
               e = Math.min(255, e);
               e = Math.max(-255, e);
 
