@@ -5,6 +5,13 @@
 </head>
 
 <body>
+
+    <div id="container">
+        <div id="controlinfo">No connection to Host</div>
+        <div id="joystickL" class="stickzone"></div>
+        <div id="joystickR" class="stickzone"></div>
+    </div>
+
     <script type="text/javascript" src="js/socket.io.min.js"></script>
     <script type="text/javascript" src="js/nipplejs.min.js"></script>
     <script>
@@ -20,30 +27,32 @@
                 'xy': xy
             });
         }
-    </script>
-    <div id="controlInfo">No connection to Host</div>
-    <div id="joystickL" class="stickzone"></div>
-    <div id="joystickR" class="stickzone"></div>
-    <script>
+
+        var controlInfo = document.getElementById('controlinfo');
+
         //add joystick
         var stickL = nipplejs.create({
             zone: document.getElementById('joystickL'),
             mode: 'static',
+            size: '255',
             position: {
-                left: '35%',
-                top: '50%'
+                left: '10%',
+                top: '80%'
             },
-            color: 'red'
+            color: 'black',
+            restOpacity: '0.7'
         });
 
         var stickR = nipplejs.create({
             zone: document.getElementById('joystickR'),
             mode: 'static',
+            size: '255',
             position: {
-                left: '65%',
-                top: '50%'
+                left: '90%',
+                top: '80%'
             },
-            color: 'red'
+            color: 'black',
+            restOpacity: '0.7'
         });
 
         //save stick front divs
@@ -57,7 +66,7 @@
 
         //listen for joystick movement
         stickL.on('move', function(ev, nipple) {
-          //check if client is controlling
+            //check if client is controlling
             if (controlling) {
                 //set new position
                 xy[0] = nipple.instance.frontPosition.y;
@@ -66,22 +75,22 @@
 
                 setXY();
             } else {
-              //prevent all movement
+                //prevent all movement
                 frontArray[0].style.left = 0;
                 frontArray[0].style.top = 0;
             }
         });
 
         stickR.on('move', function(ev, nipple) {
-          if (controlling) {
-              xy[1] = nipple.instance.frontPosition.y;
-              frontArray[1].style.left = 0;
+            if (controlling) {
+                xy[1] = nipple.instance.frontPosition.y;
+                frontArray[1].style.left = 0;
 
-              setXY();
-          } else {
-              frontArray[1].style.left = 0;
-              frontArray[1].style.top = 0;
-          }
+                setXY();
+            } else {
+                frontArray[1].style.left = 0;
+                frontArray[1].style.top = 0;
+            }
         });
 
         stickL.on('end', function(ev, nipple) {

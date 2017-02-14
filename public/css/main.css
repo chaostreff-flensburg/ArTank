@@ -1,8 +1,26 @@
-.stickzone {
+#container {
   position: relative;
-  margin-top: 5%;
-  width: 400px;
-  display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 5%;
+  width: 400px;
+}
+
+#controlinfo {
+  margin-top: 0px;
+  text-align: center;
+}
+
+.stickzone {
+  margin-top: 40%;
+  position: relative;
+  display: block;
+}
+
+.front {
+  background-color: black;
+}
+
+.back {
+  background-color: grey;
 }
