@@ -227,6 +227,7 @@ io.on('connection', function(socket) {
               e = e*5;
               e = Math.min(255, e);
               e = Math.max(-255, e);
+              e = -e;
 
               xy[i] = e;
             });
