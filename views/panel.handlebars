@@ -5,7 +5,6 @@
 </head>
 
 <body>
-<img src=":8080/stream/video.mjpeg" alt="image"  >
     <div id="container">
         <div id="controlinfo">No connection to Host</div>
         <div id="joystickL" class="stickzone"></div>
@@ -29,6 +28,15 @@
         }
 
         var controlInfo = document.getElementById('controlinfo');
+
+
+        //add mjpeg stream
+        let hostUrl = document.URL;
+
+        let streamImg = document.createElement('img');
+        streamImg.setAttribute('src', hostUrl+'stream/video.mjpeg');
+        streamImg.setAttribute('alt', 'No connection to Video');
+        document.getElementById('container').appendChild(streamImg);
 
         //add joystick
         var stickL = nipplejs.create({
