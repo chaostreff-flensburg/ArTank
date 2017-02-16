@@ -73,7 +73,7 @@ tank.on('data', function(data) {
 // Socket.io
 // ====================
 var xy = [0, 0];
-var controllingSocket = "";
+var controllingSocket = null;
 var controllingTimestamp = 0;
 var waitingSockets = [];
 const CONTROLTIME = 15000;
@@ -115,7 +115,7 @@ var controllerCheck = function() {
     }
 
     //check if controlling Socket is free
-    if (controllingSocket === "") {
+    if (controllingSocket === null) {
         //make first socket in waitinglist controller
         controllingSocket = waitingSockets[0];
         controllingTimestamp = Date.now();
