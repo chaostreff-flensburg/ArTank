@@ -31,10 +31,10 @@
 
 
         //add mjpeg stream
-        let hostUrl = document.URL;
+        let hostUrl = window.location.hostname;
 
         let streamImg = document.createElement('img');
-        streamImg.setAttribute('src', hostUrl+'stream/video.mjpeg');
+        streamImg.setAttribute('src', 'https://'+hostUrl+':8080/stream/video.mjpeg');
         streamImg.setAttribute('alt', 'No connection to Video');
         document.getElementById('container').appendChild(streamImg);
 
