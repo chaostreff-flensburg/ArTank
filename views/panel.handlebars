@@ -35,6 +35,7 @@
         let streamImg = document.createElement('img');
         streamImg.setAttribute('src', 'https://'+hostUrl+':8080/stream/video.mjpeg');
         streamImg.setAttribute('style', '-webkit-user-select: none');
+        streamImg.setAttribute('id', 'video');
         document.getElementById('container').appendChild(streamImg);
 
         //add joystick
