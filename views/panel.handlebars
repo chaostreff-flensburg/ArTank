@@ -36,7 +36,7 @@
         streamImg.setAttribute('src', 'https://'+hostUrl+':8080/stream/video.mjpeg');
         streamImg.setAttribute('style', '-webkit-user-select: none');
         streamImg.setAttribute('id', 'video');
-        document.getElementById('container').appendChild(streamImg);
+        document.getElementById('container').insertBefore(streamImg, document.getElementById('joystickL'));
 
         //add joystick
         var stickL = nipplejs.create({
