@@ -11,8 +11,8 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 5%;
-    width: 100%;
-
+    max-width: 900px;
+    max-height: 500px;
 }
 
 #container > p {
@@ -25,7 +25,7 @@
 
 #video {
     width: 360px;
-    height: 240px;
+    max-height: 240px;
     background-color: red;
     flex: 1 0 100%;
     align-self: center;
@@ -37,7 +37,11 @@
     align-self: center;
 }
 
-@media handheld and (orientation: landscape) {
+#instructions {
+  margin-top: 30px;
+}
+
+@media (orientation: landscape) {
   #controls {
     flex-flow: row;
     align-items: center;

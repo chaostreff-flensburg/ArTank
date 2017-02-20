@@ -11,7 +11,7 @@
             <div id="joystickL" class="stickzone"></div>
             <div id="joystickR" class="stickzone"></div>
         </div>
-        <p>Nutze die Joysticks oder die Tasten W-S und O-L, um die Ketten zu steuern!</p>
+        <p id="instructions">Nutze die Joysticks oder die Tasten W-S und O-L, um die Ketten zu steuern!</p>
     </div>
 
     <script type="text/javascript" src="js/socket.io.min.js"></script>
@@ -227,6 +227,25 @@
                 toggleSticks(true);
             }
         });
+
+        /* --------- voice recognition for movement ------------- */
+        /*
+        if (annyang) {
+            // Let's define a command.
+            var commands = {
+                'hello': function() {
+                    alert('Hello world!');
+                }
+            };
+
+            // Add our commands to annyang
+            annyang.addCommands(commands);
+
+            // Start listening.
+            annyang.start();
+        }
+        */
+
         /* --------- SOCKET STUFF ------- */
 
         //set intial slider values
