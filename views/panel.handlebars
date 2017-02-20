@@ -6,17 +6,22 @@
 
 <body>
     <div id="container">
-        <div id="controlinfo">No connection to Host</div>
-        <div id="joystickL" class="stickzone"></div>
-        <div id="joystickR" class="stickzone"></div>
+        <p id="controlinfo">No connection to Host</p>
+        <div id="controls">
+            <div id="joystickL" class="stickzone"></div>
+            <div id="joystickR" class="stickzone"></div>
+        </div>
+        <p>Nutze die Joysticks oder die Tasten W-S und O-L, um die Ketten zu steuern!</p>
     </div>
 
     <script type="text/javascript" src="js/socket.io.min.js"></script>
     <script type="text/javascript" src="js/nipplejs.min.js"></script>
+    <script type="text/javascript" src="js/jquery-min.js"></script>
     <script>
         var socket = io();
         var controlling = false;
         var waitingTime = 0;
+        var controlMethod = "";
         const checkupTime = 1000;
 
         var xy = [0, 0];
@@ -33,10 +38,10 @@
         //add mjpeg stream
         let hostUrl = window.location.hostname;
         let streamImg = document.createElement('img');
-        streamImg.setAttribute('src', 'http://'+hostUrl+':8080/stream/video.mjpeg');
+        streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
         streamImg.setAttribute('style', '-webkit-user-select: none');
         streamImg.setAttribute('id', 'video');
-        document.getElementById('container').insertBefore(streamImg, document.getElementById('joystickL'));
+        document.getElementById('controls').insertBefore(streamImg, document.getElementById('joystickL'));
 
         //add joystick
         var stickL = nipplejs.create({
@@ -72,54 +77,155 @@
             frontArray[1].style.top = xy[1];
         }
 
-        //listen for joystick movement
-        stickL.on('move', function(ev, nipple) {
-            //check if client is controlling
-            if (controlling) {
-                //set new position
-                xy[0] = nipple.instance.frontPosition.y;
-                //prevent lateral movement
-                frontArray[0].style.left = 0;
+        /* ----- listen for joystick movement --------- */
+        //function which toggles usability of sticks
+        var toggleSticks = function(useSticks) {
+            if (useSticks) {
+                stickL.on('move', function(ev, nipple) {
+                    //check if client is controlling
+                    if (controlling && controlMethod == "" || controlMethod == "stick") {
+                        //set control methods flag
+                        controlMethod = "stick";
 
-                setXY();
+                        //set new position
+                        xy[0] = nipple.instance.frontPosition.y;
+                        //prevent lateral movement
+                        frontArray[0].style.left = 0;
+
+                        setXY();
+                    } else {
+                        //prevent all movement
+                        frontArray[0].style.left = 0;
+                        frontArray[0].style.top = 0;
+                    }
+                });
+
+                stickR.on('move', function(ev, nipple) {
+                    if (controlling && controlMethod == "" || controlMethod == "stick") {
+                        //set control methods flag
+                        controlMethod = "stick";
+
+                        xy[1] = nipple.instance.frontPosition.y;
+                        frontArray[1].style.left = 0;
+
+                        setXY();
+                    } else {
+                        frontArray[1].style.left = 0;
+                        frontArray[1].style.top = 0;
+                    }
+                });
+
+                stickL.on('end', function(ev, nipple) {
+                    if (controlling && controlMethod == "" || controlMethod == "stick") {
+                        xy[0] = 0;
+
+                        setXY();
+
+                        //reset control method flag
+                        controlMethod = "";
+                    }
+                });
+
+                stickR.on('end', function(ev, nipple) {
+                    if (controlling && controlMethod == "" || controlMethod == "stick") {
+                        xy[1] = 0;
+
+                        setXY();
+
+                        //reset control method flag
+                        controlMethod = "";
+                    }
+                });
             } else {
-                //prevent all movement
-                frontArray[0].style.left = 0;
-                frontArray[0].style.top = 0;
+                stickL.on('move', function(ev, nipple) {
+                    //prevent all movement
+                    frontArray[0].style.left = 0;
+                    frontArray[0].style.top = xy[0];
+                });
+
+                stickR.on('move', function(ev, nipple) {
+                    //prevent all movement
+                    frontArray[1].style.left = 0;
+                    frontArray[1].style.top = xy[1];
+                });
             }
-        });
-
-        stickR.on('move', function(ev, nipple) {
-            if (controlling) {
-                xy[1] = nipple.instance.frontPosition.y;
-                frontArray[1].style.left = 0;
-
-                setXY();
-            } else {
-                frontArray[1].style.left = 0;
-                frontArray[1].style.top = 0;
-            }
-        });
-
-        stickL.on('end', function(ev, nipple) {
-            xy[0] = 0;
-
-            setXY();
-        });
-
-        stickR.on('end', function(ev, nipple) {
-            xy[1] = 0;
-
-            setXY();
-        });
-
-        var toggleSticks = function(control) {
-            //controlElements.disabled = !control;
         }
 
-        //toggle sliders initially
-        toggleSticks(controlling);
+        toggleSticks(true);
 
+        /* ----------- listen for key input ------------ */
+
+        $('body').keydown(function(e) {
+            if (controlling && controlMethod == "" || controlMethod == "key") {
+                //prohibit stick movement
+                toggleSticks(false);
+
+                //set control methods flag
+                controlMethod = "key";
+
+                //process input
+                switch (e.key) {
+                    case 's':
+                        frontArray[0].style.top = 255 / 2;
+                        xy[0] = 255 / 2;
+                        break;
+
+                    case 'w':
+                        frontArray[0].style.top = -255 / 2;
+                        xy[0] = -255 / 2;
+                        break;
+
+                    case 'l':
+                        frontArray[1].style.top = 255 / 2;
+                        xy[1] = 255 / 2;
+                        break;
+
+                    case 'o':
+                        frontArray[1].style.top = -255 / 2;
+                        xy[1] = -255 / 2;
+                        break;
+                }
+
+                //send input
+                setXY();
+            }
+        });
+
+        $('body').keyup(function(e) {
+            if (controlling && controlMethod == "" || controlMethod == "key") {
+                //process input
+                switch (e.key) {
+                    case 's':
+                        frontArray[0].style.top = 0;
+                        xy[0] = 0;
+                        break;
+
+                    case 'w':
+                        frontArray[0].style.top = 0;
+                        xy[0] = 0;
+                        break;
+
+                    case 'l':
+                        frontArray[1].style.top = 0;
+                        xy[1] = 0;
+                        break;
+
+                    case 'o':
+                        frontArray[1].style.top = 0;
+                        xy[1] = 0;
+                        break;
+                }
+
+                //send input
+                setXY();
+
+                //reset control method flag
+                controlMethod = "";
+
+                //reallow stick movement
+                toggleSticks(true);
+            }
+        });
         /* --------- SOCKET STUFF ------- */
 
         //set intial slider values
