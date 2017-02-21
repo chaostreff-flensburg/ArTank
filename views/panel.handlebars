@@ -78,6 +78,14 @@
             frontArray[1].style.top = xy[1];
         }
 
+        //function which periodically emits stick positions (prevents motor timeout after one second if position does not change)
+        var updateStickPosition = function() {
+          if(controlMethod == "stick" && xy != [0, 0]) {
+            setXY();
+            setTimeout(updateStickPosition, 300);
+          }
+        }
+
         /* ----- listen for joystick movement --------- */
         //function which toggles usability of sticks
         var toggleSticks = function(useSticks) {
@@ -93,7 +101,7 @@
                         //prevent lateral movement
                         frontArray[0].style.left = 0;
 
-                        setXY();
+                        updateStickPosition();
                     } else {
                         //prevent all movement
                         frontArray[0].style.left = 0;
@@ -109,7 +117,7 @@
                         xy[1] = nipple.instance.frontPosition.y;
                         frontArray[1].style.left = 0;
 
-                        setXY();
+                        updateStickPosition();
                     } else {
                         frontArray[1].style.left = 0;
                         frontArray[1].style.top = 0;
