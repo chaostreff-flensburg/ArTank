@@ -170,7 +170,7 @@ io.on('connection', function(socket) {
 
     //send initial values to new user
     socket.emit('initialize', {
-        'xy' : xy
+        'xy': xy
     });
 
     //let clients check if the controller has changed
@@ -215,21 +215,21 @@ io.on('connection', function(socket) {
         //only process input from currently controlling socket
         if (socket.id === controllingSocket) {
 
-          //broadcast current position to all sockets
-          socket.broadcast.emit('xy', {
-              'xy': msg.xy
-          });
+            //broadcast current position to all sockets
+            socket.broadcast.emit('xy', {
+                'xy': msg.xy
+            });
 
             //save and validate new position, format for arduino
             xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
             xy.forEach(function(e, i, a) {
-              e = Math.floor(e);
-              e = e*5;
-              e = Math.min(255, e);
-              e = Math.max(-255, e);
-              e = -e;
+                e = e * 1.416;
+                e = Math.floor(e);
+                e = Math.min(255, e);
+                e = Math.max(-255, e);
+                e = -e;
 
-              xy[i] = e;
+                xy[i] = e;
             });
             //console.log('R Value: ' + msg);
 

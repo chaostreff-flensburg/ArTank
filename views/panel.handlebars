@@ -24,6 +24,7 @@
         var waitingTime = 0;
         var controlMethod = "";
         const checkupTime = 1000;
+        const stickSize = 360;
 
         var xy = [0, 0];
 
@@ -48,7 +49,7 @@
         var stickL = nipplejs.create({
             zone: document.getElementById('joystickL'),
             mode: 'static',
-            size: '255',
+            size: stickSize,
             position: {
                 left: '10%',
                 top: '80%'
@@ -60,7 +61,7 @@
         var stickR = nipplejs.create({
             zone: document.getElementById('joystickR'),
             mode: 'static',
-            size: '255',
+            size: stickSize,
             position: {
                 left: '90%',
                 top: '80%'
@@ -175,23 +176,23 @@
                 //process input
                 switch (e.key) {
                     case 's':
-                        frontArray[0].style.top = 255 / 2;
-                        xy[0] = 255 / 2;
+                        frontArray[0].style.top = stickSize / 2;
+                        xy[0] = stickSize / 2;
                         break;
 
                     case 'w':
-                        frontArray[0].style.top = -255 / 2;
-                        xy[0] = -255 / 2;
+                        frontArray[0].style.top = -stickSize / 2;
+                        xy[0] = -stickSize / 2;
                         break;
 
                     case 'l':
-                        frontArray[1].style.top = 255 / 2;
-                        xy[1] = 255 / 2;
+                        frontArray[1].style.top = stickSize / 2;
+                        xy[1] = stickSize / 2;
                         break;
 
                     case 'o':
-                        frontArray[1].style.top = -255 / 2;
-                        xy[1] = -255 / 2;
+                        frontArray[1].style.top = -stickSize / 2;
+                        xy[1] = -stickSize / 2;
                         break;
                 }
 
