@@ -81,11 +81,21 @@
 
         //function which periodically emits stick positions (prevents motor timeout after one second if position does not change)
         var updateStickPosition = function() {
-          if(controlMethod == "stick" && xy != [0, 0]) {
-            setXY();
-            setTimeout(updateStickPosition, 300);
-          }
+            if (controlMethod == "stick" && xy != [0, 0]) {
+                setXY();
+                setTimeout(updateStickPosition, 300);
+            }
         }
+
+        //function which kills all movement and resets controlMethod
+        var resetMovement = function() {
+            frontArray[0].style.top = 0;
+            frontArray[1].style.top = 0;
+            xy = [0, 0];
+
+            controlMethod = "";
+        }
+
 
         /* ----- listen for joystick movement --------- */
         //function which toggles usability of sticks
@@ -238,12 +248,41 @@
         });
 
         /* --------- voice recognition for movement ------------- */
-        /*
+
         if (annyang) {
+            annyang.setLanguage('de-DE');
+
             // Let's define a command.
             var commands = {
-                'hello': function() {
-                    alert('Hello world!');
+                'fahre *direction': function(direction) {
+                    console.log(direction);
+                    if (controlling && controlMethod == "" || controlMethod == "voice") {
+                        controlMethod = "voice";
+                        switch (direction) {
+                            case 'vorwärts':
+                                frontArray[0].style.top = -stickSize / 2;
+                                frontArray[1].style.top = -stickSize / 2;
+                                xy = [-stickSize / 2, -stickSize / 2];
+                                setXY();
+
+                                setTimeout(resetMovement, 500);
+
+                                break;
+
+                            case 'rückwärts':
+
+                                break;
+
+                            case 'nach links':
+
+                                break;
+
+                            case 'nach rechts':
+
+                                break;
+                        }
+                        controlMethod = "";
+                    }
                 }
             };
 
@@ -253,7 +292,7 @@
             // Start listening.
             annyang.start();
         }
-        */
+
 
         /* --------- SOCKET STUFF ------- */
 
