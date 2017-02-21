@@ -1,7 +1,7 @@
 #container {
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #controls {
@@ -14,7 +14,7 @@
     max-width: 900px;
 }
 
-#container > p {
+#container>p {
     position: relative;
     display: block;
     text-align: center;
@@ -37,51 +37,53 @@
 }
 
 #instructions {
-  margin-top: 30px;
+    margin-top: 30px;
 }
 
 @media (orientation: landscape) {
-  #controls {
-    flex-flow: row;
-    align-items: center;
-    max-width: 480px;
-    justify-content: space-around;
-  }
+    #controls {
+        flex-flow: row;
+        align-items: center;
+        max-width: 480px;
+        justify-content: space-around;
+    }
+    #joystickL {
+        flow: 1 6 20%;
+        order: 0;
+        position: relative;
+    }
+    #video {
+        flow: 1 3 60%;
+        order: 1;
+        background-color: green;
+        max-width: 480px;
+        z-index: 1;
+    }
+    #joystickR {
+        flow: 1 6 20%;
+        order: 2;
+        position: relative;
+    }
+    .stickzone {
+        margin-top: 0px;
+        flex: none;
+        align-self: none;
+    }
+    .front {
+        z-index: 2;
+    }
 
-  #joystickL {
-    flow: 1 6 20%;
-    order: 0;
-    position: relative;
-  }
+    #joystickL .back {
+        border-radius: 25% 0 0 25% !important;
+        width: 90px !important;
+        margin-left: -90px !important;
+        z-index: 0 !important;
+    }
 
-  #video {
-    flow: 1 3 60%;
-    order: 1;
-    background-color: green;
-    max-width: 480px;
-    z-index: 1;
-  }
-
-  #joystickR {
-    flow: 1 6 20%;
-    order: 2;
-    position: relative;
-  }
-
-  .stickzone {
-    margin-top: 0px;
-    flex: none;
-    align-self: none;
-  }
-
-  .front {
-    z-index: 2;
-  }
-
-  .back {
-    border-radius: 15% !important;
-    width: 180px !important;
-    margin-left: -90px !important;
-    z-index: 0;
-  }
+    #joystickR .back {
+        border-radius: 0 25% 25% 0 !important;
+        width: 90px !important;
+        margin-left: 0px !important;
+        z-index: 0 !important;
+    }
 }

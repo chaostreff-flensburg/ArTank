@@ -115,7 +115,7 @@ var controllerCheck = function() {
     }
 
     //check if controlling Socket is free
-    if (controllingSocket === null) {
+    if (controllingSocket === null || controllingSocket === "") {
         //make first socket in waitinglist controller
         controllingSocket = waitingSockets[0];
         controllingTimestamp = Date.now();

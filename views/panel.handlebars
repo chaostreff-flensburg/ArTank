@@ -255,6 +255,8 @@
             // Let's define a command.
             var commands = {
                 'fahre *direction': function(direction) {
+                  //pause voice recognition
+                  annyang.pause();
                     console.log(direction);
                     if (controlling && controlMethod == "" || controlMethod == "voice") {
                         controlMethod = "voice";
@@ -270,18 +272,32 @@
                                 break;
 
                             case 'rückwärts':
+                                frontArray[0].style.top = stickSize / 2;
+                                frontArray[1].style.top = stickSize / 2;
+                                xy = [stickSize / 2, stickSize / 2];
+                                setXY();
 
+                                setTimeout(resetMovement, 500);
                                 break;
 
                             case 'nach links':
+                                frontArray[1].style.top = -stickSize / 2;
+                                xy = [0, -stickSize / 2];
+                                setXY();
 
+                                setTimeout(resetMovement, 500);
                                 break;
 
                             case 'nach rechts':
+                                frontArray[0].style.top = -stickSize / 2;
+                                xy = [-stickSize / 2, 0];
+                                setXY();
 
+                                setTimeout(resetMovement, 500);
                                 break;
                         }
                         controlMethod = "";
+                        annyang.resume();
                     }
                 }
             };
@@ -290,7 +306,7 @@
             annyang.addCommands(commands);
 
             // Start listening.
-            annyang.start();
+            annyang.start({autoRestart: true});
         }
 
 
