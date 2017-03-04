@@ -132,6 +132,7 @@ function onRemoteStreamRemoved(event) {
 }
 
 function start() {
+  console.log("start");
     if ("WebSocket" in window) {
         document.getElementById("stop").disabled = false;
         document.getElementById("start").disabled = true;
