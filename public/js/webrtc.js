@@ -139,7 +139,7 @@ function start() {
         server = document.getElementById("signalling_server").value.toLowerCase();
 
         var protocol = location.protocol === "https:" ? "wss:" : "ws:";
-        ws = new WebSocket(protocol + '//' + server + '/stream/webrtc');
+        ws = new WebSocket('https:' + '//' + hostUrl + ':8080/stream/webrtc');
 
         function offer(stream) {
             createPeerConnection();
