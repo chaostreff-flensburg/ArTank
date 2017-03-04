@@ -5,8 +5,12 @@
 var express = require("express"),
     app = express(),
     router = express.Router(),
-    http = require('http').Server(app),
-    server = require('http').createServer(app),
+    fs = require('fs'),
+    privateKey = fs.readFileSync('sslcert/server.key'),
+    certificate = fs.readFileSync('sslcert/server.crt'),
+    credentials = {key: privateKey, cert: certificate},
+    https = require('https').Server(credentials, app),
+    server = require('https').createServer(credentials, app),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     methodOverride = require('method-override'),
@@ -16,7 +20,7 @@ var express = require("express"),
     PORT = process.env.PORT || 8081,
     publicDir = process.argv[2] || __dirname + '/public',
     path = require('path'),
-    io = require("socket.io")(http, {
+    io = require("socket.io")(https, {
         serveClient: false
     }),
     exphbs = require('express-handlebars'),
@@ -244,8 +248,8 @@ io.on('connection', function(socket) {
 // ====================
 
 //start socket.io listener
-http.listen(PORT, function() {
-    console.log("Server showing %s listening at http://%s:%s", publicDir, hostname, PORT);
+https.listen(PORT, function() {
+    console.log("Server showing %s listening at https://%s:%s", publicDir, hostname, PORT);
 });
 
 //start express
