@@ -140,7 +140,7 @@ function start() {
         server = document.getElementById("signalling_server").value.toLowerCase();
 
         var protocol = location.protocol === "https:" ? "wss:" : "ws:";
-        console.log('https:' + '//' + window.location.hostname + ':8080/stream/webrtc');
+        console.log('wss:' + '//' + window.location.hostname + ':8080/stream/webrtc');
         ws = new WebSocket('https:' + '//' + window.location.hostname + ':8080/stream/webrtc');
 
         function offer(stream) {
