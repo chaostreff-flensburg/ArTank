@@ -14,6 +14,11 @@
         <p id="instructions">Nutze die Joysticks oder die Tasten W-S und O-L, um die Ketten zu steuern!</p>
     </div>
 
+    <!-- reconnect button -->
+    <div id="reconnect" style="display:none;">
+        <input id="reconnectButton" type="button" value="Verbindung wiederherstellen">
+    </div>
+
     <script type="text/javascript" src="js/socket.io.min.js"></script>
     <script type="text/javascript" src="js/nipplejs.min.js"></script>
     <script type="text/javascript" src="js/jquery-min.js"></script>
@@ -23,6 +28,7 @@
         var controlling = false;
         var waitingTime = 0;
         var controlMethod = "";
+        var afk = false;
         const checkupTime = 1000;
         const stickSize = 360;
 
@@ -39,10 +45,16 @@
 
         //add mjpeg stream
         let hostUrl = window.location.hostname;
+
+        let streamImg = document.createElement('div');
+
+        /*
         let streamImg = document.createElement('img');
         streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
         streamImg.setAttribute('style', '-webkit-user-select: none');
+        */
         streamImg.setAttribute('id', 'video');
+
         document.getElementById('controls').insertBefore(streamImg, document.getElementById('joystickL'));
 
         //add joystick
@@ -249,6 +261,7 @@
 
         /* --------- voice recognition for movement ------------- */
 
+        /*
         if (annyang) {
             annyang.setLanguage('de-DE');
 
@@ -308,7 +321,7 @@
             // Start listening.
             annyang.start({autoRestart: true});
         }
-
+        */
 
         /* --------- SOCKET STUFF ------- */
 
@@ -323,20 +336,30 @@
         //lock sliders if user is not in control
         socket.on('controlling', function(msg) {
             controlling = msg.control;
+            afk = msg.afk === true ? true : false;
             //toggleControlElements(controlling);
 
             //set control info
             if (controlling) {
-                controlInfo.textContent = "Du kontrollierst den ArTank! Mal was cooles!";
-            } else {
+                controlInfo.textContent = "Du kontrollierst den ArTank! Tob dich aus!";
+            } else if (!controlling && afk !== true) {
                 //check if waiting time is still correct, if not, change it
                 if (waitingTime !== msg.waitingTime && msg.waitingTime != "NaN") {
                     waitingTime = Math.floor(msg.waitingTime / 1000);
                 }
+            } else if (afk) {
+                controlInfo.textContent = "Du hast zu lange keine Eingabe gemacht! Drücke auf den Knopf, um dich wieder zu verbinden.";
+
+                //disconnect from socket
+                socket.disconnect();
+
+                //display reconnect button
+                $('#reconnect').css("display", "block");
+
             }
         });
 
-        //transmit joystick values if user is not controlling
+        //thostnameransmit joystick values if user is not controlling
         socket.on('xy', function(msg) {
             if (!controlling) {
                 xy = msg.xy;
@@ -346,8 +369,8 @@
 
         //if client is not controlling, periodically check if control has been given to client
         var controllerCheck = function() {
-            if (!controlling) {
-                console.log("Checking for Controller change...");
+            if (!controlling && afk === false) {
+                //console.log("Checking for Controller change...");
                 socket.emit('controllercheck', {});
             }
             setTimeout(
@@ -358,8 +381,8 @@
 
         //set waiting timer
         var waitingTimer = function() {
-            if (!controlling) {
-                controlInfo.textContent = waitingTime + " Sekunden, bis du Panzermaler wirst!";
+            if (!controlling && afk === false) {
+                controlInfo.textContent = waitingTime + " Sekunden, bis du Led-Meister wirst!";
 
                 if (waitingTime > 0)
                     --waitingTime;
@@ -368,6 +391,23 @@
         }
 
         waitingTimer();
+
+        //add event listener to reconnect button
+        $('#reconnectButton').click(function() {
+            //console.log("Reconnecting...");
+            //connect to server
+            socket.connect({
+                "forceNew": true
+            });
+
+            //join server as user
+            socket.emit('role', {role: "user"});
+
+            afk = false;
+
+            //hide reconnect button
+            $('#reconnect').css("display", "none");
+        });
     </script>
 </body>
 

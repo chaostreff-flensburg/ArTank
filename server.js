@@ -73,10 +73,12 @@ tank.on('data', function(data) {
 // Socket.io
 // ====================
 var xy = [0, 0];
-var controllingSocket = null;
+var controllingSocket = "";
 var controllingTimestamp = 0;
+var lastInputTimestamp = 0;
 var waitingSockets = [];
 const CONTROLTIME = 15000;
+const AFKTIME = 10000;
 
 //get time it takes for socket to become controller
 var waitingTimeCheck = function(socket) {
@@ -115,7 +117,7 @@ var controllerCheck = function() {
     }
 
     //check if controlling Socket is free
-    if (controllingSocket === null || controllingSocket === "") {
+    if (typeof controllingSocket === "undefined") {
         //make first socket in waitinglist controller
         controllingSocket = waitingSockets[0];
         controllingTimestamp = Date.now();
@@ -125,8 +127,13 @@ var controllerCheck = function() {
             control: true
         });
 
+        //initially set lastInputTimestamp
+        lastInputTimestamp = Date.now();
+
         //remove first socket from waiting list
         waitingSockets.splice(0, 1);
+
+        return;
     }
 
     //replace controller if he is controlling for longer than the allowed controlling time
@@ -148,8 +155,39 @@ var controllerCheck = function() {
             control: true
         });
 
+        //initially set lastInputTimestamp
+        lastInputTimestamp = Date.now();
+
         //remove first socket from waiting list
         waitingSockets.splice(0, 1);
+
+        return;
+    }
+
+    //replace controller and remove him from waitinglist if his lastInputTimestamp is older than AFKTIME
+    if (Date.now() - lastInputTimestamp > AFKTIME) {
+        //inform current controlling socket of controller change and afk status
+        io.to(controllingSocket).emit('controlling', {
+            control: false,
+            afk: true
+        });
+
+        //make first socket in waiting list the controller and set timestamp (thereby remove last controller from waiting list)
+        controllingSocket = waitingSockets[0];
+        controllingTimestamp = Date.now();
+
+        //inform new controlling socket
+        io.to(controllingSocket).emit('controlling', {
+            control: true
+        });
+
+        //initially set lastInputTimestamp
+        lastInputTimestamp = Date.now();
+
+        //remove first socket from waiting list
+        waitingSockets.splice(0, 1);
+
+        return;
     }
 };
 
