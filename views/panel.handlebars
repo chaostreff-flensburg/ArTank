@@ -335,6 +335,8 @@
 
         //lock sliders if user is not in control
         socket.on('controlling', function(msg) {
+            console.dir(msg);
+
             controlling = msg.control;
             afk = msg.afk === true ? true : false;
             //toggleControlElements(controlling);
@@ -401,7 +403,9 @@
             });
 
             //join server as user
-            socket.emit('role', {role: "user"});
+            socket.emit('role', {
+                role: "user"
+            });
 
             afk = false;
 
