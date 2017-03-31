@@ -194,7 +194,7 @@ var controllerCheck = function() {
 //connection handling
 io.on('connection', function(socket) {
 
-    console.log("${socket.id} connected!");
+    console.log(socket.id+" connected!");
 
     //add socket to waiting pool
     waitingSockets.push(socket.id);
@@ -228,7 +228,7 @@ io.on('connection', function(socket) {
 
     //replace controller on disconnect/ remove socket from waitinglist
     socket.on('disconnect', function() {
-        console.log("${socket.id} disconnected!");
+        console.log(socket.id+" disconnected!");
 
         //check if socket is controller
         if (socket.id === controllingSocket) {
