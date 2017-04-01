@@ -79,6 +79,7 @@ var lastInputTimestamp = 0;
 var waitingSockets = [];
 const CONTROLTIME = 15000;
 const AFKTIME = 10000;
+var tankBuffer = new Buffer();
 
 //get time it takes for socket to become controller
 var waitingTimeCheck = function(socket) {
@@ -277,7 +278,8 @@ io.on('connection', function(socket) {
 
             //send current xy values to tank
             console.log(xy);
-            tank.write(new Buffer(xy[0] + ';' + xy[1] + '*'));
+            tankBuffer.write(xy[0] + ';' + xy[1] + '*', 0);
+            tank.write(tankBuffer);
         }
     });
 });
