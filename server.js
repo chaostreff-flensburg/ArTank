@@ -271,7 +271,8 @@ io.on('connection', function(socket) {
             //save and validate new position, format for arduino
             xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
             xy.forEach(function(e, i, a) {
-                e = e * 0.94;
+              //255 / (value / 2)
+                e = e * 2.125;
                   console.log(e);
                 e = Math.floor(e);
                 e = Math.min(255, e);
