@@ -13,7 +13,7 @@ var express = require("express"),
     SerialPort = require('serialport'),
     errorHandler = require('errorhandler'),
     hostname = process.env.HOSTNAME || 'localhost',
-    PORT = process.env.PORT || 80,
+    PORT = process.env.PORT || 8080,
     publicDir = process.argv[2] || __dirname + '/public',
     path = require('path'),
     io = require("socket.io")(http, {
@@ -271,7 +271,8 @@ io.on('connection', function(socket) {
             //save and validate new position, format for arduino
             xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
             xy.forEach(function(e, i, a) {
-                e = e * 1.416;
+                e = e * 0.94;
+                  console.log(e);
                 e = Math.floor(e);
                 e = Math.min(255, e);
                 e = Math.max(-255, e);

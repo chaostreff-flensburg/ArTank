@@ -30,7 +30,7 @@
         var controlMethod = "";
         var afk = false;
         const checkupTime = 1000;
-        const stickSize = 360;
+        const stickSize = 240;
 
         var xy = [0, 0];
 
@@ -46,7 +46,7 @@
         //add mjpeg stream
         let hostUrl = window.location.hostname;
 
-        //let streamImg = document.createElement('div'); 
+        //let streamImg = document.createElement('div');
 
 
         let streamImg = document.createElement('img');
@@ -384,7 +384,7 @@
         //set waiting timer
         var waitingTimer = function() {
             if (!controlling && afk === false) {
-                controlInfo.textContent = waitingTime + " Sekunden, bis du Led-Meister wirst!";
+                controlInfo.textContent = waitingTime + " Sekunden, bis du Panzerkommandeur wirst!";
 
                 if (waitingTime > 0)
                     --waitingTime;

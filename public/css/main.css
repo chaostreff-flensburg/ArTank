@@ -2,6 +2,7 @@
     position: relative;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 50px;
 }
 
 #controls {
@@ -10,7 +11,7 @@
     flex-flow: column;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 200px;
+    margin-top: 20px;
     max-width: 900px;
 }
 
@@ -23,8 +24,8 @@
 }
 
 #video {
-    width: 480px;
-    max-height: 360px;
+    max-width: 360px;
+    max-height: 240px;
     background-color: white;
     display: none;
     flex: 1 0 100%;
@@ -38,14 +39,14 @@
 }
 
 #instructions {
-    margin-top: 230px;
+    margin-top: 20px;
 }
 
 @media (orientation: landscape) {
     #controls {
         flex-flow: row;
         align-items: center;
-        max-width: 480px;
+        max-width: 360px;
         justify-content: space-around;
     }
     #joystickL {
@@ -58,7 +59,6 @@
         display: block;
         order: 1;
         background-color: white;
-        max-width: 480px;
         z-index: 1;
     }
     #joystickR {
