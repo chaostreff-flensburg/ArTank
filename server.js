@@ -273,7 +273,6 @@ io.on('connection', function(socket) {
             xy.forEach(function(e, i, a) {
               //255 / (value / 2)
                 e = e * 2.125;
-                  console.log(e);
                 e = Math.floor(e);
                 e = Math.min(255, e);
                 e = Math.max(-255, e);
@@ -284,7 +283,7 @@ io.on('connection', function(socket) {
             //console.log('R Value: ' + msg);
 
             //send current xy values to tank
-            //console.log(xy);
+            console.log(xy);
             tankBuffer.write(xy[0] + ';' + xy[1] + '*', 0, 'utf-8');
             tank.write(tankBuffer);
         }
