@@ -277,7 +277,7 @@ io.on('connection', function(socket) {
             //console.log('R Value: ' + msg);
 
             //send current xy values to tank
-            console.log(xy);
+            //console.log(xy);
             tankBuffer.write(xy[0] + ';' + xy[1] + '*', 0, 'utf-8');
             tank.write(tankBuffer);
         }
