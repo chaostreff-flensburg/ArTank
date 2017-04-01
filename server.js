@@ -272,7 +272,7 @@ io.on('connection', function(socket) {
             xy = [parseInt(msg.xy[0]), parseInt(msg.xy[1])];
             xy.forEach(function(e, i, a) {
               //255 / (value / 2)
-                e = e * 2.125;
+                e = e * 2.1;
                 e = Math.floor(e);
                 e = Math.min(255, e);
                 e = Math.max(-255, e);
