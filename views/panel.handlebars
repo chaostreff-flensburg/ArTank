@@ -2,6 +2,7 @@
 
 <head>
     <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Arvo" rel="stylesheet">
 </head>
 
 <body>
@@ -50,10 +51,20 @@
 
 
         let streamImg = document.createElement('img');
-        streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
+
         streamImg.setAttribute('style', '-webkit-user-select: none');
 
         streamImg.setAttribute('id', 'video');
+
+        streamImg.bluescreen = function() {
+            streamImg.setAttribute('src', '');
+        }
+
+        streamImg.stream = function() {
+          streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
+        }
+
+        streamImg.stream();
 
         document.getElementById('controls').insertBefore(streamImg, document.getElementById('joystickL'));
 
@@ -355,6 +366,9 @@
                 //disconnect from socket
                 socket.disconnect();
 
+                //close video stream
+                streamImg.bluescreen();
+
                 //display reconnect button
                 $('#reconnect').css("display", "block");
 
@@ -401,6 +415,9 @@
             socket.connect({
                 "forceNew": true
             });
+
+            //connect to video stream
+            streamImg.sream();
 
             //join server as user
             socket.emit('role', {

@@ -1,8 +1,16 @@
+body {
+  background-image: url('/images/hintergrund-dotted-01.png');
+}
+
 #container {
     position: relative;
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
+}
+
+#controlinfo {
+  font-size: 26px;
 }
 
 #controls {
@@ -21,6 +29,7 @@
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+    font-family: 'Arvo', serif;
 }
 
 #video {
@@ -30,6 +39,7 @@
     display: none;
     flex: 1 0 100%;
     align-self: center;
+    background-image: url('/images/bluescreen.gif');
 }
 
 .stickzone {
