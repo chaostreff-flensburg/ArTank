@@ -125,7 +125,8 @@ var controllerCheck = function() {
 
         //inform new controlling socket
         io.to(controllingSocket).emit('controlling', {
-            control: true
+            control: true,
+            afk: false
         });
 
         //initially set lastInputTimestamp
@@ -153,7 +154,8 @@ var controllerCheck = function() {
 
         //inform new controlling socket
         io.to(controllingSocket).emit('controlling', {
-            control: true
+            control: true,
+            afk: false
         });
 
         //initially set lastInputTimestamp
@@ -257,6 +259,9 @@ io.on('connection', function(socket) {
     socket.on('xy', function(msg) {
         //only process input from currently controlling socket
         if (socket.id === controllingSocket) {
+
+          //refresh afk timer
+          lastInputTimestamp = Date.now();
 
             //broadcast current position to all sockets
             socket.broadcast.emit('xy', {
