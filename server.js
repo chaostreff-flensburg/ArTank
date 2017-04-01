@@ -79,7 +79,7 @@ var lastInputTimestamp = 0;
 var waitingSockets = [];
 const CONTROLTIME = 15000;
 const AFKTIME = 10000;
-var tankBuffer = new Buffer();
+var tankBuffer = new Buffer(16);
 
 //get time it takes for socket to become controller
 var waitingTimeCheck = function(socket) {
