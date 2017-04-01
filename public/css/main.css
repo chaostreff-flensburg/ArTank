@@ -35,6 +35,8 @@ body {
 #video {
     max-width: 360px;
     max-height: 240px;
+    min-width: 360px;
+    max-height: 240px;
     background-color: white;
     display: none;
     flex: 1 0 100%;
