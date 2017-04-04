@@ -1,8 +1,13 @@
+#include <NewPing.h>
 #include <MSMotorShield.h>
+
+#define PING_PIN  12
+#define MAX_DISTANCE 20
 
 MS_DCMotor motor1(3);
 MS_DCMotor motor2(4);
 
+NewPing sonar(PING_PIN, PING_PIN, MAX_DISTANCE);
 
 //Kommunikation via Serial
 char current = 0;            // Einzelzeichen über serial
@@ -33,6 +38,15 @@ void setup() {
 void loop() {
   readSerialData();
   checkTimeOut();
+  checkDistance();
+}
+
+void checkDistance()
+{
+  delay(50);
+  Serial.print("Ping: ");
+  Serial.print(sonar.ping_cm());
+  Serial.println("cm");
 }
 
 void checkTimeOut() {
