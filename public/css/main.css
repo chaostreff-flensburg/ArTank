@@ -36,7 +36,6 @@ body {
     width: 360px;
     height: 240px;
     background-color: white;
-    display: none;
     flex: 1 0 100%;
     align-self: center;
     background-image: url('/images/bluescreen.gif');
