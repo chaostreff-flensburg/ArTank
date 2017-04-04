@@ -51,32 +51,32 @@
 
         //let streamImg = document.createElement('div');
 
-/*
-        let streamImg = document.createElement('img');
+        /*
+                let streamImg = document.createElement('img');
 
-        streamImg.setAttribute('style', '-webkit-user-select: none');
+                streamImg.setAttribute('style', '-webkit-user-select: none');
 
-        streamImg.setAttribute('id', 'video');
+                streamImg.setAttribute('id', 'video');
 
-        streamImg.bluescreen = function() {
-            streamImg.setAttribute('src', '');
-        }
+                streamImg.bluescreen = function() {
+                    streamImg.setAttribute('src', '');
+                }
 
-        streamImg.stream = function() {
-            streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
-        }
+                streamImg.stream = function() {
+                    streamImg.setAttribute('src', 'http://' + hostUrl + ':8080/stream/video.mjpeg');
+                }
 
-        streamImg.stream();
+                streamImg.stream();
 
-        document.getElementById('controls').insertBefore(streamImg, document.getElementById('joystickL'));
+                document.getElementById('controls').insertBefore(streamImg, document.getElementById('joystickL'));
 
-        */
+                */
 
         /* ----- WEBSOCKET VIDEO --------- */
 
         //--CONFIGURATION--
         var websocketAddress = "ws://192.168.1.172:54018";
-        var imageWidth = "320px";
+        var imageWidth = "360px";
         var imageHeight = "240px";
         //--END OF CONFIGURATION--
         var frameBuffer = new Array();
@@ -109,6 +109,13 @@
             };
         }
 
+        function disconnectFromStream() {
+            websocket.close();
+            websocket = null;
+
+            document.getElementById("mjpeg-relay").src = "";
+        }
+
         function onOpen(evt) {
             console.log("mjpeg-relay connected\n");
         }
@@ -135,7 +142,8 @@
             websocket.close();
         }
 
-        //add joystick
+        /* ---- JOYSTICK MANAGEMENT ----- */
+
         var stickL = nipplejs.create({
             zone: document.getElementById('joystickL'),
             mode: 'static',
@@ -434,7 +442,7 @@
                 socket.disconnect();
 
                 //close video stream
-                streamImg.bluescreen();
+                disconnectFromStream();
 
                 //display reconnect button
                 $('#reconnect').css("display", "block");
@@ -484,7 +492,7 @@
             });
 
             //connect to video stream
-            streamImg.sream();
+            connectToStream();
 
             //join server as user
             socket.emit('role', {
