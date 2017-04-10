@@ -75,7 +75,7 @@
         /* ----- WEBSOCKET VIDEO --------- */
 
         //--CONFIGURATION--
-        var websocketAddress = "ws://192.168.1.172:54018";
+        var websocketAddress = "ws://artank.jonasleitner.de:12345";
         var imageWidth = "360px";
         var imageHeight = "240px";
         //--END OF CONFIGURATION--
@@ -85,7 +85,7 @@
         function imageOnload() {
             //bring the new image to the top
             this.style.zIndex = frameCount;
-            while (frameBuffer.length > 10) {
+            while (frameBuffer.length > 1) {
                 //remove oldest frames, keeping a buffer of 10 most recent frames to avoid flickering
                 var oldFrame = frameBuffer.shift();
                 oldFrame.parentNode.removeChild(oldFrame);
@@ -97,21 +97,25 @@
             websocket = new WebSocket(websocketAddress);
             websocket.onopen = function(evt) {
                 onOpen(evt)
+                console.log("Conected to Video!");
             };
             websocket.onclose = function(evt) {
                 onClose(evt)
+                console.log("Disconnected from Video!");
             };
             websocket.onmessage = function(evt) {
                 onMessage(evt)
             };
             websocket.onerror = function(evt) {
                 onError(evt)
+                console.log("Video Error!");
             };
         }
 
         function disconnectFromStream() {
             websocket.close();
             websocket = null;
+            console.log("Disconnected!");
 
             document.getElementById("mjpeg-relay").src = "";
         }
