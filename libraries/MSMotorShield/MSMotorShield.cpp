@@ -4,7 +4,7 @@
 
 
 #include <avr/io.h>
-#include "arduino.h"
+#include "Arduino.h"
 #include "MSMotorShield.h"
 
 static uint8_t latch_state;
